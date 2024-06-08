@@ -21,3 +21,15 @@ func (*PostgresRepository) Save(u *userdomain.User) error {
 
 	return nil
 }
+
+func (*PostgresRepository) FindAll() ([]string, error) {
+	var users []string
+	err := db.DataBase().
+		Select(&users, "SELECT name FROM users")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}

@@ -28,5 +28,6 @@ func main() {
 
 	pgRepository := userinfrastructure.NewPostgresRepository()
 	e.POST("/users", userinfrastructure.CreatUserHandler(pgRepository))
+	e.GET("/users", userinfrastructure.FindAllUsersHandler(pgRepository))
 	e.Logger.Fatal(e.Start(":3000"))
 }
