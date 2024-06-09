@@ -21,8 +21,8 @@ func (u *User) HashSaltPassword() error {
 }
 
 // Returns true if the password is correct, false if not
-func (u *User) ValidatePassword(hashedPassword string, password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func (u *User) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
 }
 

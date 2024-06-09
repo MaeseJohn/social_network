@@ -29,5 +29,7 @@ func main() {
 	pgRepository := userinfrastructure.NewPostgresRepository()
 	e.POST("/users", userinfrastructure.CreatUserHandler(pgRepository))
 	e.GET("/users", userinfrastructure.FindAllUsersHandler(pgRepository))
+	jwtService := userinfrastructure.NewJWTService("secretkey")
+	e.POST("/login", userinfrastructure.LoginUserHandler(jwtService, pgRepository))
 	e.Logger.Fatal(e.Start(":3000"))
 }
