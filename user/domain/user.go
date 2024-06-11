@@ -11,21 +11,6 @@ type User struct {
 	Age      string
 }
 
-func (u *User) HashSaltPassword() error {
-	password := []byte(u.Password)
-	//Hashing the password with the default cost of 10
-	//The salt is automatically (and randomly) generated upon hashing a password
-	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
-	u.Password = string(hashedPassword)
-	return err
-}
-
-// Returns true if the password is correct, false if not
-func (u *User) ValidatePassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	return err == nil
-}
-
 func NewUser(id, name, lastName, email, password, age string) (*User, error) {
 	user := User{
 		Id:       id,
@@ -40,4 +25,19 @@ func NewUser(id, name, lastName, email, password, age string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (u *User) HashSaltPassword() error {
+	password := []byte(u.Password)
+	//Hashing the password with the default cost of 10
+	//The salt is automatically (and randomly) generated upon hashing a password
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	u.Password = string(hashedPassword)
+	return err
+}
+
+// Returns true if the password is correct, false if not
+func (u *User) ValidatePassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
 }
