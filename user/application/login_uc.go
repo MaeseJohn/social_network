@@ -1,7 +1,6 @@
 package application
 
 import (
-	"fmt"
 	"social_media/user/domain"
 )
 
@@ -16,12 +15,12 @@ func LoginUC(email, password string, rep domain.UserRepository, jwt JWTService) 
 	}
 
 	if !user.ValidatePassword(password) {
-		return "", fmt.Errorf("Invalid credetials")
+		return "", domain.ErrInvalidCredentials
 	}
 
 	token, err := jwt.CreateToken(user)
 	if err != nil {
-		return "", err
+		return "", err //Check this error
 	}
 
 	return token, nil

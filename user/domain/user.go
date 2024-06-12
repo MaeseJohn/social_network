@@ -22,7 +22,7 @@ func NewUser(id, name, lastName, email, password, age string) (*User, error) {
 	}
 
 	if err := user.HashSaltPassword(); err != nil {
-		return nil, err
+		return nil, ErrInternalServerError
 	}
 	return &user, nil
 }

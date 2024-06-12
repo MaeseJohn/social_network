@@ -1,7 +1,7 @@
 package application
 
 import (
-	userdomain "social_media/user/domain"
+	"social_media/user/domain"
 )
 
 type CreateUserParams struct {
@@ -13,9 +13,9 @@ type CreateUserParams struct {
 	Age      string `validate:"required,datetime=2006-01-02"`
 }
 
-func CreateUserUC(u *CreateUserParams, rep userdomain.UserRepository) error {
+func CreateUserUC(u *CreateUserParams, rep domain.UserRepository) error {
 
-	user, err := userdomain.NewUser(u.Id, u.Name, u.LastName, u.Email, u.Password, u.Age)
+	user, err := domain.NewUser(u.Id, u.Name, u.LastName, u.Email, u.Password, u.Age)
 	if err != nil {
 		return err
 	}

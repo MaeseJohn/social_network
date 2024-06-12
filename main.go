@@ -1,8 +1,10 @@
 package main
 
 import (
+	"net/http"
 	"social_media/db"
 	"social_media/db/migrations"
+	"social_media/user/domain"
 	userinfrastructure "social_media/user/infrastructure"
 	"social_media/validator"
 
@@ -10,6 +12,10 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
+
+var httpErrors = map[error]int{
+	domain.ErrInvalidCredentials: http.StatusUnprocessableEntity,
+}
 
 func main() {
 	err := godotenv.Load(".env")
