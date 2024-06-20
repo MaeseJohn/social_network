@@ -1,8 +1,8 @@
 package application
 
-import userdomain "social_media/user/domain"
+import "social_media/user/domain"
 
-func FindAllUsersUC(rep userdomain.UserRepository) ([]string, error) {
+func FindAllUsersUC(rep domain.UserRepository) ([]string, error) {
 	var users []string
 	users, err := rep.GetUsers()
 	if err != nil {

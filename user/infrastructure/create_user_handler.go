@@ -3,29 +3,31 @@ package infrastructure
 import (
 	"log"
 	"net/http"
-	userapp "social_media/user/application"
+	"social_media/user/application"
 	"social_media/user/domain"
-	userdomain "social_media/user/domain"
 
 	"github.com/labstack/echo/v4"
 )
 
 // Get data, validate and call the UC (separation of concerns)
-func CreatUserHandler(r userdomain.UserRepository) echo.HandlerFunc {
+func CreatUserHandler(r domain.UserRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		var p userapp.CreateUserParams
+		var p application.CreateUserParams
 
-		if err := ctx.Bind(&p); err != nil {
+		err := ctx.Bind(&p)
+		if err != nil {
 			log.Println(err)
 			return domain.ErrUnprocessableEntity
 		}
 
-		if err := ctx.Validate(p); err != nil {
+		err = ctx.Validate(p)
+		if err != nil {
 			log.Println(err)
 			return domain.ErrUnprocessableEntity
 		}
 
-		if err := userapp.CreateUserUC(&p, r); err != nil {
+		err = application.CreateUserUC(&p, r)
+		if err != nil {
 			return err
 		}
 
