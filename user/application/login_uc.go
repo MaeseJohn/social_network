@@ -15,7 +15,7 @@ func LoginUC(email, password string, rep domain.UserRepository, jwt JWTService) 
 	}
 
 	if !user.ValidatePassword(password) {
-		return "", domain.ErrInvalidCredentials
+		return "", err
 	}
 
 	token, err := jwt.CreateToken(user)

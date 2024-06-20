@@ -13,9 +13,13 @@ func FindAllUsersHandler(rep userdomain.UserRepository) echo.HandlerFunc {
 		var users []string
 		users, err := userapp.FindAllUsersUC(rep)
 		if err != nil {
-			return ctx.String(http.StatusNotFound, err.Error())
+			return err
 		}
 
-		return ctx.JSON(http.StatusOK, users)
+		return ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    http.StatusOK,
+			"message": "Items retrieved successfully",
+			"data":    users,
+		})
 	}
 }

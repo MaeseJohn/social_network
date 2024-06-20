@@ -21,8 +21,9 @@ func NewUser(id, name, lastName, email, password, age string) (*User, error) {
 		Age:      age,
 	}
 
-	if err := user.HashSaltPassword(); err != nil {
-		return nil, ErrInternalServerError
+	err := user.HashSaltPassword()
+	if err != nil {
+		return nil, err
 	}
 	return &user, nil
 }
@@ -31,9 +32,9 @@ func (u *User) HashSaltPassword() error {
 	password := []byte(u.Password)
 	//Hashing the password with the default cost of 10
 	//The salt is automatically (and randomly) generated upon hashing a password
-	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	hashedPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	u.Password = string(hashedPassword)
-	return err
+	return ErrInternalServerError
 }
 
 // Returns true if the password is correct, false if not

@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"log"
 	"net/http"
 	"social_media/user/application"
 	"social_media/user/domain"
@@ -18,12 +19,14 @@ func LoginUserHandler(jwtService application.JWTService, rep domain.UserReposito
 		var params LoginParamas
 		err := ctx.Bind(&params)
 		if err != nil {
-			return ctx.String(http.StatusUnprocessableEntity, err.Error())
+			log.Println(err)
+			return domain.ErrUnprocessableEntity
 		}
 
 		err = ctx.Validate(params)
 		if err != nil {
-			return ctx.String(http.StatusUnprocessableEntity, err.Error())
+			log.Println(err)
+			return domain.ErrUnprocessableEntity
 		}
 
 		token, err := application.LoginUC(params.Email, params.Password, rep, jwtService)

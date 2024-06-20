@@ -5,7 +5,7 @@ import (
 	"social_media/db"
 	"social_media/db/migrations"
 	"social_media/user/domain"
-	userinfrastructure "social_media/user/infrastructure"
+	"social_media/user/infrastructure"
 	"social_media/validator"
 
 	goPlayground "github.com/go-playground/validator/v10"
@@ -22,20 +22,14 @@ func main() {
 	if err != nil {
 		panic("Fail loading .env file")
 	}
-
 	//Connect to db and creat de db instance
 	db.Connection()
-
 	//Fill data base with migrations
 	migrations.SetupDB()
 
 	e := echo.New()
 	e.Validator = &validator.CustomValidator{Validator: goPlayground.New()}
-
-	pgRepository := userinfrastructure.NewPostgresRepository()
-	e.POST("/users", userinfrastructure.CreatUserHandler(pgRepository))
-	e.GET("/users", userinfrastructure.FindAllUsersHandler(pgRepository))
-	jwtService := userinfrastructure.NewJWTService("secretkey")
-	e.POST("/login", userinfrastructure.LoginUserHandler(jwtService, pgRepository))
+	e.HTTPErrorHandler = infrastructure.CustomHTTPErrorHandler
+	infrastructure.RegisterUserRoutes(e)
 	e.Logger.Fatal(e.Start(":3000"))
 }

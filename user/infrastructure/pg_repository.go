@@ -58,7 +58,7 @@ func (*PostgresRepository) GetUser(email string) (*domain.User, error) {
 	err := db.DataBase().
 		Get(&user, "SELECT * FROM users WHERE email=$1", email)
 	if err != nil {
-		return nil, domain.ErrNotFound //It can be another error? like conexion fail or something?
+		return nil, domain.ErrNotFound
 	}
 	return user.dbUserToDomainUser(), nil
 }
