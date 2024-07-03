@@ -1,6 +1,5 @@
-CREATE TABLE
-    users (
-        id uuid PRIMARY KEY,
+CREATE TABLE users (
+        user_id uuid PRIMARY KEY,
         name TEXT  NOT NULL,
         last_name TEXT  NOT NULL,
         email TEXT NOT NULL,

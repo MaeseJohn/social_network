@@ -32,9 +32,13 @@ func (u *User) HashSaltPassword() error {
 	password := []byte(u.Password)
 	//Hashing the password with the default cost of 10
 	//The salt is automatically (and randomly) generated upon hashing a password
-	hashedPassword, _ := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	u.Password = string(hashedPassword)
-	return ErrInternalServerError
+	if err != nil {
+		return ErrInternalServerError
+	}
+	return nil
+
 }
 
 // Returns true if the password is correct, false if not

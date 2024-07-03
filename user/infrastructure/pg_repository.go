@@ -9,7 +9,7 @@ type PostgresRepository struct {
 }
 
 type DBUser struct {
-	Id       string
+	Id       string `db:"user_id"`
 	Name     string
 	LastName string `db:"last_name"`
 	Email    string
@@ -34,7 +34,7 @@ func NewPostgresRepository() *PostgresRepository {
 
 func (*PostgresRepository) Save(u *domain.User) error {
 	_, err := db.DataBase().
-		NamedExec("INSERT INTO users (id, name, last_name, email, password, age) VALUES (:id, :name, :lastname, :email, :password, :age)", u)
+		NamedExec("INSERT INTO users (user_id, name, last_name, email, password, age) VALUES (:id, :name, :lastname, :email, :password, :age)", u)
 	if err != nil {
 		return domain.ErrInternalServerError
 	}
