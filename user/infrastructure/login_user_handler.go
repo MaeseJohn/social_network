@@ -31,6 +31,10 @@ func LoginUserHandler(jwtService application.JWTService, rep domain.UserReposito
 			return err
 		}
 
-		return ctx.JSON(http.StatusCreated, token)
+		return ctx.JSON(http.StatusOK, map[string]interface{}{
+			"code":    http.StatusOK,
+			"message": "Login successfully",
+			"token":   token,
+		})
 	}
 }

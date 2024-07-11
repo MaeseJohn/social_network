@@ -5,7 +5,7 @@ import (
 )
 
 type JWTService interface {
-	CreateToken(user *domain.User) (string, error)
+	CreateToken(userId, userName string) (string, error)
 }
 
 func LoginUC(email, password string, rep domain.UserRepository, jwt JWTService) (string, error) {
@@ -18,7 +18,7 @@ func LoginUC(email, password string, rep domain.UserRepository, jwt JWTService) 
 		return "", err
 	}
 
-	token, err := jwt.CreateToken(user)
+	token, err := jwt.CreateToken(user.Id, user.Name)
 	if err != nil {
 		return "", err //Check this error
 	}

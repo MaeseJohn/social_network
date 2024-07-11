@@ -1,9 +1,9 @@
-package infrastructure
+package jwtservice
 
 import (
 	"fmt"
-	"social_media/follow/domain"
 	"strings"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -14,6 +14,16 @@ type JwtServiceImpl struct {
 
 func NewJWTService(SecretKey string) *JwtServiceImpl {
 	return &JwtServiceImpl{SecretKey: SecretKey}
+}
+
+func (service *JwtServiceImpl) CreateToken(userId, userName string) (string, error) {
+	claims := jwt.MapClaims{
+		"user_id":  userId,
+		"username": userName,
+		"exp":      time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(service.SecretKey))
 }
 
 func (service *JwtServiceImpl) ObtainTokenClaims(reqToken string) (jwt.MapClaims, error) {
@@ -32,13 +42,12 @@ func (service *JwtServiceImpl) ObtainTokenClaims(reqToken string) (jwt.MapClaims
 	})
 
 	if err != nil {
-		return nil, domain.ErrUnauthorized
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, domain.ErrUnauthorized
+		return nil, err
 	}
 	return claims, nil
-
 }

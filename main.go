@@ -5,8 +5,8 @@ import (
 	"social_media/db/migrations"
 	followinfrastructure "social_media/follow/infrastructure"
 	userinfrastructure "social_media/user/infrastructure"
-	"social_media/utilities"
-	"social_media/validator"
+	customerros "social_media/utilities/errorhandler"
+	"social_media/utilities/validator"
 
 	goPlayground "github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
@@ -25,7 +25,7 @@ func main() {
 
 	e := echo.New()
 	e.Validator = &validator.CustomValidator{Validator: goPlayground.New()}
-	e.HTTPErrorHandler = utilities.CustomHTTPErrorHandler
+	e.HTTPErrorHandler = customerros.CustomHTTPErrorHandler
 	userinfrastructure.RegisterUserRoutes(e)
 	followinfrastructure.RegisterFollowRoutes(e)
 	e.Logger.Fatal(e.Start(":3000"))
