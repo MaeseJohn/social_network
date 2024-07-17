@@ -1,10 +1,12 @@
 package infrastructure
 
 import (
+	"fmt"
 	"net/http"
 	"social_media/follow/application"
 	"social_media/follow/domain"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,17 +14,19 @@ type params struct {
 	FollowedId string
 }
 
-func FollowHandler(rep domain.FollowRepository, jwtService application.JWTService) echo.HandlerFunc {
+func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 
+		fmt.Println("holamundo")
 		var params params
 		err := ctx.Bind(&params)
 		if err != nil {
 			return domain.ErrUnprocessableEntity
 		}
-
-		reqToken := ctx.Request().Header.Get("Authorization")
-		err = application.FollowUC(reqToken, params.FollowedId, rep, jwtService)
+		user := ctx.Get("user").(*jwt.Token)
+		fmt.Println(user)
+		claims := user.Claims.(jwt.MapClaims)
+		err = application.FollowUC(params.FollowedId, rep, claims)
 		if err != nil {
 			return err
 		}

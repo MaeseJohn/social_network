@@ -10,15 +10,10 @@ type JWTService interface {
 	ObtainTokenClaims(reqToken string) (jwt.MapClaims, error)
 }
 
-func FollowUC(reqToken, followedId string, rep domain.FollowRepository, jwt JWTService) error {
-	claims, err := jwt.ObtainTokenClaims(reqToken)
-	if err != nil {
-		return domain.ErrUnauthorized
-	}
-
+func FollowUC(followedId string, rep domain.FollowRepository, claims jwt.MapClaims) error {
 	followerId := claims["user_id"].(string)
 	follow := domain.NewFollow(followerId, followedId)
-	err = rep.SaveFollow(follow)
+	err := rep.SaveFollow(follow)
 	if err != nil {
 		return err
 	}
