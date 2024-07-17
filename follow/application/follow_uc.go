@@ -1,6 +1,7 @@
 package application
 
 import (
+	"fmt"
 	"social_media/follow/domain"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -13,6 +14,7 @@ type JWTService interface {
 func FollowUC(followedId string, rep domain.FollowRepository, claims jwt.MapClaims) error {
 	followerId := claims["user_id"].(string)
 	follow := domain.NewFollow(followerId, followedId)
+	fmt.Println(follow)
 	err := rep.SaveFollow(follow)
 	if err != nil {
 		return err

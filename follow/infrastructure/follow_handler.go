@@ -16,16 +16,14 @@ type params struct {
 
 func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-
-		fmt.Println("holamundo")
 		var params params
 		err := ctx.Bind(&params)
 		if err != nil {
 			return domain.ErrUnprocessableEntity
 		}
 		user := ctx.Get("user").(*jwt.Token)
-		fmt.Println(user)
 		claims := user.Claims.(jwt.MapClaims)
+		fmt.Println(claims)
 		err = application.FollowUC(params.FollowedId, rep, claims)
 		if err != nil {
 			return err
