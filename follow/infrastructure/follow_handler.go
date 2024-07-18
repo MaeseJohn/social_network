@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"fmt"
 	"net/http"
 	"social_media/follow/application"
 	"social_media/follow/domain"
@@ -23,7 +22,6 @@ func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 		}
 		user := ctx.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
-		fmt.Println(claims)
 		err = application.FollowUC(params.FollowedId, rep, claims)
 		if err != nil {
 			return err
