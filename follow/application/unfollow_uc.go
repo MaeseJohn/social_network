@@ -6,10 +6,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func FollowUC(followedId string, rep domain.FollowRepository, claims jwt.MapClaims) error {
+func UnfollowUC(followedId string, rep domain.FollowRepository, claims jwt.MapClaims) error {
 	followerId := claims["user_id"].(string)
-	follow := domain.NewFollow(followerId, followedId)
-	err := rep.SaveFollow(follow)
+	err := rep.DeleteFollow(followerId, followedId)
 	if err != nil {
 		return err
 	}

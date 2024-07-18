@@ -8,4 +8,5 @@ import (
 func RegisterFollowRoutes(e *echo.Echo) {
 	pgRepository := NewPostgresRepository()
 	e.POST("/follow", FollowHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
+	e.DELETE("/follow", UnfollowHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
 }

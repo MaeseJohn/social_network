@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
+func UnfollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		var params followedid
 		err := ctx.Bind(&params)
@@ -22,14 +22,14 @@ func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 		}
 		user := ctx.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
-		err = application.FollowUC(params.FollowedId, rep, claims)
+		err = application.UnfollowUC(params.FollowedId, rep, claims)
 		if err != nil {
 			return err
 		}
 
 		return ctx.JSON(http.StatusOK, map[string]interface{}{
 			"code":    http.StatusOK,
-			"message": "Follow successfully",
+			"message": "Unfollow successfully",
 			"data":    params,
 		})
 	}
