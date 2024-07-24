@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"fmt"
 	"net/http"
 	"social_media/user/application"
 	"social_media/user/domain"
@@ -15,11 +16,15 @@ func CreatUserHandler(r domain.UserRepository) echo.HandlerFunc {
 
 		err := ctx.Bind(&p)
 		if err != nil {
+			fmt.Println(err)
 			return domain.ErrUnprocessableEntity
 		}
 
 		err = ctx.Validate(p)
 		if err != nil {
+			fmt.Println(p)
+			fmt.Println("validate")
+			fmt.Println(err)
 			return domain.ErrUnprocessableEntity
 		}
 

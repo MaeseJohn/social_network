@@ -9,9 +9,10 @@ type User struct {
 	Email    string
 	Password string
 	Age      string
+	Private  bool
 }
 
-func NewUser(id, name, lastName, email, password, age string) (*User, error) {
+func NewUser(id, name, lastName, email, password, age string, private bool) (*User, error) {
 	user := User{
 		Id:       id,
 		Name:     name,
@@ -19,6 +20,7 @@ func NewUser(id, name, lastName, email, password, age string) (*User, error) {
 		Email:    email,
 		Password: password,
 		Age:      age,
+		Private:  private,
 	}
 
 	err := user.HashSaltPassword()
