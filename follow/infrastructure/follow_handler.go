@@ -16,20 +16,39 @@ func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 		if err != nil {
 			return domain.ErrUnprocessableEntity
 		}
+
 		err = ctx.Validate(params)
 		if err != nil {
 			return domain.ErrUnprocessableEntity
 		}
-		user := ctx.Get("user").(*jwt.Token)
-		claims := user.Claims.(jwt.MapClaims)
-		err = application.FollowUC(params.FollowedId, rep, claims)
+
+		private, err := rep.GetUserPrivacity(params.FollowedId)
 		if err != nil {
 			return err
 		}
 
+		user := ctx.Get("user").(*jwt.Token)
+		claims := user.Claims.(jwt.MapClaims)
+
+		var responseMessage string
+		if private {
+			err = application.FollowRequestUC(params.FollowedId, rep, claims)
+			if err != nil {
+				return err
+			}
+			responseMessage = "Follow request sent"
+
+		} else {
+			err = application.FollowUC(params.FollowedId, rep, claims)
+			if err != nil {
+				return err
+			}
+			responseMessage = "Follow successfully"
+		}
+
 		return ctx.JSON(http.StatusOK, map[string]interface{}{
 			"code":    http.StatusOK,
-			"message": "Follow successfully",
+			"message": responseMessage,
 			"data":    params,
 		})
 	}

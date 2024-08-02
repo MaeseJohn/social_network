@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"fmt"
 	"social_media/db"
 	"social_media/user/domain"
 )
@@ -15,6 +16,7 @@ type DBUser struct {
 	Email    string
 	Password string
 	Age      string
+	Private  string
 }
 
 func (user *DBUser) dbUserToDomainUser() *domain.User {
@@ -58,6 +60,7 @@ func (*PostgresRepository) GetUser(email string) (*domain.User, error) {
 	err := db.DataBase().
 		Get(&user, "SELECT * FROM users WHERE email=$1", email)
 	if err != nil {
+		fmt.Println(err)
 		return nil, domain.ErrNotFound
 	}
 	return user.dbUserToDomainUser(), nil
