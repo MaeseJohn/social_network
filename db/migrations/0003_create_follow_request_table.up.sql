@@ -1,4 +1,5 @@
 CREATE TABLE follow_requests (
+    follow_id uuid NOT NULL,
     sender_id uuid NOT NULL,
     receiver_id uuid NOT NULL,
     status TEXT NOT NULL,

@@ -2,6 +2,6 @@ package domain
 
 type UserRepository interface {
 	Save(u *User) error
-	GetUsers() ([]string, error)
+	GetUsers() ([]User, error)
 	GetUser(email string) (*User, error)
 }

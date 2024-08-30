@@ -10,7 +10,7 @@ import (
 
 func FindAllUsersHandler(rep domain.UserRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		var users []string
+		var users []domain.User
 		users, err := application.FindAllUsersUC(rep)
 		if err != nil {
 			return err

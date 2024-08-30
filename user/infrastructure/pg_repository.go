@@ -44,12 +44,17 @@ func (*PostgresRepository) Save(u *domain.User) error {
 	return nil
 }
 
-func (*PostgresRepository) GetUsers() ([]string, error) {
-	var users []string
+func (*PostgresRepository) GetUsers() ([]domain.User, error) {
+	var dbusers []DBUser
 	err := db.DataBase().
-		Select(&users, "SELECT name FROM users")
+		Select(&dbusers, "SELECT user_id, name, last_name FROM users")
 	if err != nil {
 		return nil, domain.ErrNotFound
+	}
+
+	var users []domain.User
+	for _, user := range dbusers {
+		users = append(users, *user.dbUserToDomainUser())
 	}
 
 	return users, nil

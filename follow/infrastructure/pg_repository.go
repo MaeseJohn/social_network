@@ -55,7 +55,7 @@ func (*PostgresRepository) GetUserPrivacity(userid string) (bool, error) {
 
 func (*PostgresRepository) RequestFollow(followRequest *domain.FollowRequest) error {
 	_, err := db.DataBase().
-		NamedExec("INSERT INTO follow_requests (sender_id, receiver_id, request_date, status) VALUES (:senderid, :receiverid, :requestdate, :status)", followRequest)
+		NamedExec("INSERT INTO follow_requests (follow_id, sender_id, receiver_id, request_date, status) VALUES (:followid, :senderid, :receiverid, :requestdate, :status)", followRequest)
 
 	if err != nil {
 		return domain.ErrInternalServerError
@@ -75,12 +75,14 @@ func (*PostgresRepository) CheckFriendRequestExists(senderId, receiverId string)
 }
 
 type DBFollowRequest struct {
+	FollowId    string `db:"follow_id"`
 	SenderId    string `db:"sender_id"`
 	RequestDate string `db:"request_date"`
 }
 
 func (followRequest *DBFollowRequest) DBFollowRequestToFollowRequest() domain.FollowRequest {
 	return domain.FollowRequest{
+		FollowId:    followRequest.FollowId,
 		SenderId:    followRequest.SenderId,
 		ReceiverId:  "",
 		Status:      "Pending",
@@ -91,7 +93,7 @@ func (followRequest *DBFollowRequest) DBFollowRequestToFollowRequest() domain.Fo
 func (*PostgresRepository) GetFollowRequests(receiverid string) ([]domain.FollowRequest, error) {
 	var DBFollowRequests []DBFollowRequest
 	err := db.DataBase().
-		Select(&DBFollowRequests, "SELECT sender_id, request_date FROM follow_requests WHERE receiver_id=$1 AND status=$2", receiverid, "Pending")
+		Select(&DBFollowRequests, "SELECT follow_id, sender_id, request_date FROM follow_requests WHERE receiver_id=$1 AND status=$2", receiverid, "Pending")
 	if err != nil {
 		return nil, domain.ErrNotFound
 	}
