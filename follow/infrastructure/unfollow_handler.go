@@ -22,7 +22,7 @@ func UnfollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 		}
 		user := ctx.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
-		err = application.UnfollowUC(params.FollowedId, rep, claims)
+		err = application.UnfollowUC(params.ReceiverId, rep, claims)
 		if err != nil {
 			return err
 		}

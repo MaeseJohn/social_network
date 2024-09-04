@@ -9,9 +9,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
+func ManageFollowRequestsHandler(rep domain.FollowRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		var params followedid
+		type followRequestResponse struct {
+			SenderId string `validate:"required,uuid"`
+			Response bool
+		}
+		var params followRequestResponse
 		err := ctx.Bind(&params)
 		if err != nil {
 			return domain.ErrUnprocessableEntity
@@ -25,14 +29,26 @@ func FollowHandler(rep domain.FollowRepository) echo.HandlerFunc {
 		user := ctx.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
 
-		err, responseMessage := application.FollowUC(params.ReceiverId, rep, claims)
-		if err != nil {
-			return err
+		var responseMessage string
+		if params.Response {
+			err = application.AcceptFollowRequestUC(rep, claims, params.SenderId)
+			if err != nil {
+				return err
+			}
+			responseMessage = "Follow request acepted"
+
+		} else {
+			//declinefollowrequest
+			if err != nil {
+				return err
+			}
+			responseMessage = "Follow request delined"
 		}
+
 		return ctx.JSON(http.StatusOK, map[string]interface{}{
 			"code":    http.StatusOK,
 			"message": responseMessage,
-			"data":    params,
+			"data":    nil,
 		})
 	}
 }

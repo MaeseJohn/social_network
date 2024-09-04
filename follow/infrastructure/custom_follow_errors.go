@@ -6,7 +6,8 @@ import (
 )
 
 var ErrorsMap = map[error]int{
-	domain.ErrAlredyExist:         http.StatusBadRequest,          //400
+	domain.ErrFollowExist:         http.StatusBadRequest,          //400
+	domain.ErrRequestExist:        http.StatusBadRequest,          //400
 	domain.ErrUnauthorized:        http.StatusUnauthorized,        //401
 	domain.ErrNotFound:            http.StatusNotFound,            //404
 	domain.ErrUnprocessableEntity: http.StatusUnprocessableEntity, //422

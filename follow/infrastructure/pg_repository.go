@@ -1,7 +1,6 @@
 package infrastructure
 
 import (
-	"fmt"
 	"social_media/db"
 	"social_media/follow/domain"
 )
@@ -18,11 +17,20 @@ func (*PostgresRepository) SaveFollow(follow *domain.Follow) error {
 		NamedExec("INSERT INTO follows (follower_id, followed_id, follow_date) VALUES (:followerid, :followedid, :followdate)", follow)
 
 	if err != nil {
-		fmt.Println(err)
 		return domain.ErrInternalServerError
 	}
 
 	return nil
+}
+
+func (*PostgresRepository) CheckFollowExists(senderId, receiverId string) (bool, error) {
+	var exists bool
+	err := db.DataBase().Get(&exists, "SELECT EXISTS(SELECT 1 FROM follows WHERE follower_id = $1 AND followed_id = $2)", senderId, receiverId)
+	if err != nil {
+		return exists, domain.ErrInternalServerError
+	}
+
+	return exists, nil
 }
 
 func (*PostgresRepository) DeleteFollow(followerid, followedid string) error {
@@ -31,7 +39,6 @@ func (*PostgresRepository) DeleteFollow(followerid, followedid string) error {
 		Exec("DELETE FROM follows WHERE follower_id=$1 AND followed_id=$2", followerid, followedid)
 
 	if err != nil {
-		fmt.Println(err)
 		return domain.ErrInternalServerError
 	}
 
@@ -41,11 +48,10 @@ func (*PostgresRepository) DeleteFollow(followerid, followedid string) error {
 func (*PostgresRepository) GetUserPrivacity(userid string) (bool, error) {
 	var private []bool
 	err := db.DataBase().
-		Select(&private, "SELECT private FROM users WHERE user_id=$1", userid)
+		Select(&private, "SELECT private FROM users WHERE user_id = $1", userid)
 	if err != nil {
 		return false, domain.ErrNotFound
 	}
-
 	return private[0], nil
 }
 
@@ -64,11 +70,11 @@ func (*PostgresRepository) RequestFollow(followRequest *domain.FollowRequest) er
 	return nil
 }
 
-func (*PostgresRepository) CheckFriendRequestExists(senderId, receiverId string) (bool, error) {
+func (*PostgresRepository) CheckFollowRequestExists(senderId, receiverId string) (bool, error) {
 	var exists bool
 	err := db.DataBase().Get(&exists, "SELECT EXISTS(SELECT 1 FROM follow_requests WHERE sender_id = $1 AND receiver_id = $2)", senderId, receiverId)
 	if err != nil {
-		return false, domain.ErrInternalServerError
+		return exists, domain.ErrInternalServerError
 	}
 
 	return exists, nil
@@ -103,4 +109,13 @@ func (*PostgresRepository) GetFollowRequests(receiverid string) ([]domain.Follow
 	}
 
 	return followRequests, nil
+}
+
+func (*PostgresRepository) AcceptFollowRequest(follow *domain.Follow, senderId, receiverId string) {
+	//Crear una transacción, llamar a save follow y delete followrequest y finalizar la transacción.
+	tx := db.DataBase().MustBegin()
+	tx.NamedExec("INSERT INTO follows (follower_id, followed_id, follow_date) VALUES (:followerid, :followedid, :followdate)", follow)
+	tx.MustExec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
+	tx.Commit()
+
 }

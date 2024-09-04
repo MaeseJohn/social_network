@@ -10,4 +10,5 @@ func RegisterFollowRoutes(e *echo.Echo) {
 	e.POST("/follow", FollowHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
 	e.DELETE("/follow", UnfollowHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
 	e.GET("/follow", GetFollowRequestHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
+	e.POST("/follow/response", ManageFollowRequestsHandler(pgRepository), echojwt.JWT([]byte("secretkey")))
 }

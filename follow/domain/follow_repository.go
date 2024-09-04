@@ -6,7 +6,9 @@ type FollowRepository interface {
 	DeleteFollow(followerid, followedid string) error
 	GetUserPrivacity(userid string) (bool, error)
 	GetFollowRequests(receiverId string) ([]FollowRequest, error)
-	CheckFriendRequestExists(senderId, receiverId string) (bool, error)
+	CheckFollowExists(senderId, receiverId string) (bool, error)
+	CheckFollowRequestExists(senderId, receiverId string) (bool, error)
+	AcceptFollowRequest(follow *Follow, senderId, receiverId string)
 	/*GetFollowers(userId string) error
 	GetFollows(userId string) error*/
 }
