@@ -28,21 +28,22 @@ func ManageFollowRequestsHandler(rep domain.FollowRepository) echo.HandlerFunc {
 
 		user := ctx.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
+		receiverId := claims["user_id"].(string)
 
 		var responseMessage string
 		if params.Response {
-			err = application.AcceptFollowRequestUC(rep, claims, params.SenderId)
+			err = application.AcceptFollowRequestUC(rep, params.SenderId, receiverId)
 			if err != nil {
 				return err
 			}
 			responseMessage = "Follow request acepted"
 
 		} else {
-			//declinefollowrequest
+			err = application.DeclineFollowRequestUC(rep, params.SenderId, receiverId)
 			if err != nil {
 				return err
 			}
-			responseMessage = "Follow request delined"
+			responseMessage = "Follow request declined"
 		}
 
 		return ctx.JSON(http.StatusOK, map[string]interface{}{

@@ -117,5 +117,9 @@ func (*PostgresRepository) AcceptFollowRequest(follow *domain.Follow, senderId, 
 	tx.NamedExec("INSERT INTO follows (follower_id, followed_id, follow_date) VALUES (:followerid, :followedid, :followdate)", follow)
 	tx.MustExec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
 	tx.Commit()
+}
 
+func (*PostgresRepository) DeclineFollowRequest(senderId, receiverId string) {
+	//Crear una transacción, llamar a save follow y delete followrequest y finalizar la transacción.
+	db.DataBase().MustExec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
 }
