@@ -11,6 +11,9 @@ func AcceptFollowRequestUC(rep domain.FollowRepository, senderId, receiverId str
 	}
 
 	follow := domain.NewFollow(senderId, receiverId)
-	rep.AcceptFollowRequest(follow, senderId, receiverId)
+	err = rep.AcceptFollowRequest(follow, senderId, receiverId)
+	if err != nil {
+		return err
+	}
 	return nil
 }

@@ -8,7 +8,7 @@ type FollowRepository interface {
 	GetFollowRequests(receiverId string) ([]FollowRequest, error)
 	CheckFollowExists(senderId, receiverId string) (bool, error)
 	CheckFollowRequestExists(senderId, receiverId string) (bool, error)
-	AcceptFollowRequest(follow *Follow, senderId, receiverId string)
+	AcceptFollowRequest(follow *Follow, senderId, receiverId string) error
 	DeclineFollowRequest(senderId, receiverId string)
 	/*GetFollowers(userId string) error
 	GetFollows(userId string) error*/

@@ -110,15 +110,23 @@ func (*PostgresRepository) GetFollowRequests(receiverid string) ([]domain.Follow
 	return followRequests, nil
 }
 
-func (*PostgresRepository) AcceptFollowRequest(follow *domain.Follow, senderId, receiverId string) {
-	//Crear una transacción, llamar a save follow y delete followrequest y finalizar la transacción.
+func (*PostgresRepository) AcceptFollowRequest(follow *domain.Follow, senderId, receiverId string) error {
 	tx := db.DataBase().MustBegin()
-	tx.NamedExec("INSERT INTO follows (follower_id, followed_id, follow_date) VALUES (:followerid, :followedid, :followdate)", follow)
-	tx.MustExec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
+	_, err := tx.NamedExec("INSERT INTO follows (follower_id, followed_id, follow_date) VALUES (:followerid, :followedid, :followdate)", follow)
+	if err != nil {
+		tx.Rollback()
+		return domain.ErrInternalServerError
+	}
+	_, err = tx.Exec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
+	if err != nil {
+		tx.Rollback()
+		return domain.ErrInternalServerError
+	}
 	tx.Commit()
+	return nil
 }
 
 func (*PostgresRepository) DeclineFollowRequest(senderId, receiverId string) {
-	//Crear una transacción, llamar a save follow y delete followrequest y finalizar la transacción.
+
 	db.DataBase().MustExec("DELETE FROM follow_requests WHERE sender_id=$1 AND receiver_id=$2", senderId, receiverId)
 }
