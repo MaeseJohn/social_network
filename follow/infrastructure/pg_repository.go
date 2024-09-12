@@ -61,7 +61,7 @@ func (*PostgresRepository) GetUserPrivacity(userid string) (bool, error) {
 
 func (*PostgresRepository) RequestFollow(followRequest *domain.FollowRequest) error {
 	_, err := db.DataBase().
-		NamedExec("INSERT INTO follow_requests (follow_id, sender_id, receiver_id, request_date, status) VALUES (:followid, :senderid, :receiverid, :requestdate, :status)", followRequest)
+		NamedExec("INSERT INTO follow_requests (follow_id, sender_id, receiver_id, request_date) VALUES (:followid, :senderid, :receiverid, :requestdate)", followRequest)
 
 	if err != nil {
 		return domain.ErrInternalServerError
@@ -91,7 +91,6 @@ func (followRequest *DBFollowRequest) DBFollowRequestToFollowRequest() domain.Fo
 		FollowId:    followRequest.FollowId,
 		SenderId:    followRequest.SenderId,
 		ReceiverId:  "",
-		Status:      "Pending",
 		RequestDate: followRequest.RequestDate,
 	}
 }

@@ -10,7 +10,6 @@ type FollowRequest struct {
 	FollowId    string
 	SenderId    string
 	ReceiverId  string
-	Status      string
 	RequestDate string
 }
 
@@ -21,7 +20,6 @@ func NewFollowRequest(senderId, receiverId string) *FollowRequest {
 		FollowId:    uuid.NewString(),
 		SenderId:    senderId,
 		ReceiverId:  receiverId,
-		Status:      "Pending",
 		RequestDate: followDate,
 	}
 
